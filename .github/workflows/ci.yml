@@ -115,7 +115,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Build backend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./centroid-finder
           file: ./centroid-finder/Dockerfile
@@ -125,7 +125,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: Build frontend image
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: ./centroid-finder-frontend/centroid-finder-frontend
           file: ./centroid-finder-frontend/centroid-finder-frontend/Dockerfile
