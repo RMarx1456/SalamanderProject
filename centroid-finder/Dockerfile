@@ -9,7 +9,7 @@
     # 6. Starts your web server.
 
 # Base image with minimal packages needed to run node
-FROM node:20-slim
+FROM node:25-slim
 
 # Install dependencies for installing Java and ffmpeg
     # wget is a tool to download files from the internet
