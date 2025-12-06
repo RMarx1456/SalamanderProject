@@ -1,1 +1,122 @@
-Placeholder.
+name: Deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        required: true
+        type: choice
+        options:
+          - production
+          - staging
+          - development
+      docker_compose:
+        description: 'Deploy using docker-compose'
+        required: true
+        type: boolean
+        default: true
+
+jobs:
+  deploy:
+    name: Deploy to ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    environment: ${{ inputs.environment }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up SSH
+        if: vars.SSH_HOST != ''
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy via Docker Compose
+        if: inputs.docker_compose && vars.SSH_HOST != ''
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} << 'EOF'
+            cd ${{ vars.DEPLOY_PATH || '~/salamander-project' }}
+
+            # Pull latest code
+            git pull origin master
+
+            # Pull latest images (if using registry)
+            docker-compose pull || true
+
+            # Build and restart services
+            docker-compose down
+            docker-compose up -d --build
+
+            # Show running containers
+            docker-compose ps
+          EOF
+
+      - name: Deploy via Docker (manual)
+        if: "!inputs.docker_compose && vars.SSH_HOST != ''"
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} << 'EOF'
+            # Stop and remove existing containers
+            docker stop centroid-finder-backend centroid-finder-frontend || true
+            docker rm centroid-finder-backend centroid-finder-frontend || true
+
+            # Pull latest images
+            docker pull ghcr.io/${{ github.repository }}/centroid-finder-backend:latest
+            docker pull ghcr.io/${{ github.repository }}/centroid-finder-frontend:latest
+
+            # Create network if it doesn't exist
+            docker network create app-network || true
+
+            # Run backend
+            docker run -d \
+              --name centroid-finder-backend \
+              --network app-network \
+              -p 3000:3000 \
+              -v ${{ vars.DEPLOY_PATH || '~/salamander-project' }}/videos:/videos \
+              -v ${{ vars.DEPLOY_PATH || '~/salamander-project' }}/results:/results \
+              -e VIDEO_DIR=/videos \
+              -e RESULTS_DIR=/results \
+              -e JAVA_JAR_PATH=/app/processor/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar \
+              --restart unless-stopped \
+              ghcr.io/${{ github.repository }}/centroid-finder-backend:latest
+
+            # Run frontend
+            docker run -d \
+              --name centroid-finder-frontend \
+              --network app-network \
+              -p 3005:3005 \
+              -e NEXT_PUBLIC_API_BASE_URL=http://backend:3000 \
+              --restart unless-stopped \
+              ghcr.io/${{ github.repository }}/centroid-finder-frontend:latest
+
+            # Show running containers
+            docker ps
+          EOF
+
+      - name: Health check
+        if: vars.SSH_HOST != ''
+        run: |
+          echo "Waiting for services to start..."
+          sleep 10
+
+          # Check backend health
+          curl -f http://${{ vars.SSH_HOST }}:3000/health || echo "Backend health check failed"
+
+          # Check frontend
+          curl -f http://${{ vars.SSH_HOST }}:3005 || echo "Frontend check failed"
+
+      - name: Local deployment (for testing)
+        if: vars.SSH_HOST == ''
+        run: |
+          echo "No SSH_HOST configured. This appears to be a local deployment test."
+          echo "To deploy to a remote server, configure these secrets/variables:"
+          echo "  - SSH_PRIVATE_KEY (secret)"
+          echo "  - SSH_HOST (variable)"
+          echo "  - SSH_USER (variable)"
+          echo "  - DEPLOY_PATH (variable, optional)"
+          echo ""
+          echo "Running local docker-compose for testing..."
+          docker-compose up -d --build
+          sleep 10
+          docker-compose ps

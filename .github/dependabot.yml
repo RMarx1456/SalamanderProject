@@ -1,0 +1,57 @@
+version: 2
+updates:
+  # Enable version updates for npm (backend)
+  - package-ecosystem: "npm"
+    directory: "/centroid-finder/server"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "backend"
+
+  # Enable version updates for npm (frontend)
+  - package-ecosystem: "npm"
+    directory: "/centroid-finder-frontend/centroid-finder-frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+      - "frontend"
+
+  # Enable version updates for Maven
+  - package-ecosystem: "maven"
+    directory: "/centroid-finder/processor"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+      - "java"
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    directory: "/centroid-finder"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  - package-ecosystem: "docker"
+    directory: "/centroid-finder-frontend/centroid-finder-frontend"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "docker"
+
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "github-actions"
