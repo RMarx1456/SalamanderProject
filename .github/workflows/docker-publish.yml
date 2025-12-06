@@ -65,7 +65,7 @@ jobs:
 
       - name: Download JAR artifact
         if: matrix.name == 'backend'
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
           name: centroid-finder-jar
           path: ./centroid-finder/processor/target
