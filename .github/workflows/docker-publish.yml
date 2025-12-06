@@ -34,7 +34,7 @@ jobs:
         run: mvn clean package -DskipTests
 
       - name: Upload JAR artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: centroid-finder-jar
           path: ./centroid-finder/processor/target/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar
