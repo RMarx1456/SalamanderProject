@@ -10,7 +10,11 @@ router.get('/', (req, res) => {
 });
 
 // serve static results at /results path
-router.use("/results", express.static(process.env.RESULTS_DIR));
+if (process.env.RESULTS_DIR) {
+  router.use("/results", express.static(process.env.RESULTS_DIR));
+} else {
+  console.warn('Warning: RESULTS_DIR environment variable not set. Static file serving disabled.');
+}
 
 router.get("/api/videos", getVideos);
 router.get("/thumbnail/:filename", getThumbnail);

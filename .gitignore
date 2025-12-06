@@ -1,1 +1,26 @@
 node_modules
+
+# Environment files
+.env
+*.env
+!.env.example
+
+# Build directories
+centroid-finder/processor/target/
+
+# Video and results directories (user-specific content)
+videos/
+results/
+
+# IDE files
+.vscode/
+.idea/
+*.iml
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Next.js build output
+.next/
+out/
