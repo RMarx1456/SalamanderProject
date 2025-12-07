@@ -1,4 +1,4 @@
-FROM node:18-alpine
+FROM node:18
 
 WORKDIR /app
 
@@ -12,6 +12,9 @@ RUN npm install
 COPY . .
 
 EXPOSE 3002
+
+# Add NODE_OPTIONS before build
+ENV NODE_OPTIONS="--max-old-space-size=4096"
 RUN npm run build
 
 CMD ["npm", "start"]
