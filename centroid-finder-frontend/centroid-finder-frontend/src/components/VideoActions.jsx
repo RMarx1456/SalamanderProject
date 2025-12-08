@@ -30,11 +30,11 @@ export default function VideoActions(){
       // try catch
       try {
         // Logging the post request
-        console.log("Sending URL:", `http://localhost:3000/process/${filename}?targetColor=${encodedColor}&threshold=${encodedThreshold}`);
+        console.log("Sending URL:", `${process.env.NEXT_PUBLIC_API_BASE_URL}/process/${filename}?targetColor=${encodedColor}&threshold=${encodedThreshold}`);
 
         // POST request to start processing (with filename, color, and threshold)
         const response = await fetch(
-            `http://localhost:3000/process/${filename}?targetColor=${encodedColor}&threshold=${encodedThreshold}`,
+            `${process.env.NEXT_PUBLIC_API_BASE_URL}/process/${filename}?targetColor=${encodedColor}&threshold=${encodedThreshold}`,
             { method: 'POST' }
         );
 
@@ -63,7 +63,7 @@ export default function VideoActions(){
         const interval = setInterval(async () => {
           try {
             // Get the status of the processing job
-            const response = await fetch(`http://localhost:3000/process/${jobId}/status`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/process/${jobId}/status`);
             const data = await response.json();
 
             if (data.status === 'done') {

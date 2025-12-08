@@ -20,7 +20,7 @@ export default function VideoPreview({filename}) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`http://localhost:3000/thumbnail/${filename}`);
+                const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/thumbnail/${filename}`);
                 
                 // Check if the response is OK
                 if (!response.ok) {
