@@ -15,6 +15,6 @@ EXPOSE 3002
 
 # Add NODE_OPTIONS before build
 ENV NODE_OPTIONS="--max-old-space-size=4096"
-RUN npm run build
+RUN npm run dev
 
 CMD ["npm", "start"]
