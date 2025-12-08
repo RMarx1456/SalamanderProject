@@ -15,7 +15,7 @@ COPY . .
 
 RUN npm run build
 
-EXPOSE 3002
+EXPOSE 3005
 
-# Use node directly instead of npm start to avoid potential issues
-CMD ["node_modules/.bin/next", "start", "-p", "3002"]
+# Tell Next.js to start on port 3005
+CMD ["npx", "next", "start", "-p", "3005"]
