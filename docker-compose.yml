@@ -7,15 +7,15 @@ services:
       dockerfile: Dockerfile
     container_name: centroid-finder-backend
     ports:
-      - "3000:3000"
+      - "${BACKEND_PORT}:3000"
     volumes:
       # Mount local videos directory to /videos in container
       - ./videos:/videos
       # Mount local results directory to /results in container
       - ./results:/results
     environment:
-      - VIDEO_DIR=/videos
-      - RESULTS_DIR=/results
+      - VIDEO_DIR=${VIDEO_DIR}
+      - RESULTS_DIR=${RESULTS_DIR}
       - JAVA_JAR_PATH=/app/processor/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar
     networks:
       - app-network
@@ -27,12 +27,12 @@ services:
       dockerfile: Dockerfile
       args:
         # Set the API URL that the frontend will use to connect to backend
-        - NEXT_PUBLIC_API_BASE_URL=http://localhost:3000
+        - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
     container_name: centroid-finder-frontend
     ports:
-      - "3005:3005"
+      - "${FRONTEND_PORT}:3005"
     environment:
-      - NEXT_PUBLIC_API_BASE_URL=http://backend:3000
+      - NEXT_PUBLIC_API_BASE_URL=${NEXT_PUBLIC_API_BASE_URL}
     depends_on:
       - backend
     networks:
