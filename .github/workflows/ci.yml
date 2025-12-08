@@ -8,7 +8,7 @@ on:
 
 jobs:
   backend-test:
-    name: Backend - Test & Lint
+    name: Backend Tests
     runs-on: ubuntu-latest
 
     defaults:
@@ -33,9 +33,11 @@ jobs:
         run: npm test
         env:
           NODE_OPTIONS: --experimental-vm-modules
+          VIDEO_DIR: /tmp/videos
+          RESULTS_DIR: /tmp/results
 
   frontend-test:
-    name: Frontend - Build & Lint
+    name: Frontend Tests
     runs-on: ubuntu-latest
 
     defaults:
