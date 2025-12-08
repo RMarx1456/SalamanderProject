@@ -19,7 +19,7 @@ export default function VideoChooserPage({children}){
         // fetch call to get list of all available videos
         const fetchData = async () => {
         try {
-            const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/api/videos`);
+            const response = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/videos`);
             const data = await response.json();
             console.log(data);
 
