@@ -45,5 +45,5 @@ This frontend lets you:
     docker ps
 ```
 8. Now check your the browser if the backend and frontend are running.
-- Frontend: `http://<VM_IP_Address>:3000`
-- Backend: `http://<VM_IP_Address>:5000/api/health`
+- Frontend: `http://<VM_IP_Address>:3005`
+- Backend: `http://<VM_IP_Address>:3000/api/videos`
