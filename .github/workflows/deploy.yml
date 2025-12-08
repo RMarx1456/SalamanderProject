@@ -35,8 +35,8 @@ jobs:
       - name: Deploy via Docker Compose
         if: inputs.docker_compose && vars.SSH_HOST != ''
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} << 'EOF'
-            cd ${{ vars.DEPLOY_PATH || '~/salamander-project' }}
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            cd ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}
 
             # Pull latest code
             git pull origin master
