@@ -36,6 +36,11 @@ jobs:
           mkdir -p /tmp/videos
           mkdir -p /tmp/results
 
+      - name: Create sample video for testing
+        run: |
+          # Create a minimal test video using FFmpeg
+          ffmpeg -f lavfi -i testsrc=duration=1:size=320x240:rate=1 -pix_fmt yuv420p /tmp/videos/sample_video_1.mp4
+
       - name: Install dependencies
         run: npm ci
 
