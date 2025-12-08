@@ -8,32 +8,42 @@ This frontend lets you:
 - Run the processor to analyze the video
 - Download a CSV file with the results
 
-## Setup Instructions
-1. Set up the server and processor backend.
-
-This frontend depends on a backend processor and server bundled in a Docker image.
-You must run it first, on port 3000!
-
-Run this command in your terminal:
+## VM Setup Instructions
+1. Clone this repo inside of your VM
+```bash
+    git clone https://github.com/RMarx1456/SalamanderProject.git
 ```
-docker run -p 3000:3000 -v "{absolute path to videos folder}:/videos" -v "{absolute path to results folder}:/results" ghcr.io/auglebobaugles/salamander:latest
+2. Change Directories into the project folder
+```bash
+    cd SalamanderProject/
 ```
-Replace:
-- {absolute path to videos folder} — the folder where your .mp4 files are stored
-- {absolute path to results folder} — the folder where you want the CSV output files to be saved
-2. Start the front end.
-
-a. Clone this repo
+3. Copy the example .env file and edit the credentials inside of them.
+```bash
+    cp .env.example .env
+    nano .env
 ```
-git clone https://github.com/rifflere/centroid-finder-frontend
-cd centroid-finder-frontend
+4. Install the dependencies for the ***backend***
+```bash
+    cd SalamanderProject/centroid-finder/server/
+    npm i
+    cd ../../
 ```
-
-b. Install dependencies
+5. Install the dependencies for the ***frontend***
+```bash
+    cd SalamanderProject/centroid-finder-frontend/centroid-finder-frontend/
+    npm i
+    cd ../../
 ```
-npm install
+6. Once you're back inside of the root directory of the project file, go ahead and run the docker-compose.yml file
+```bash
+    docker-compose build --no-cache frontend
+    docker-compose build --no-cache
+    docker-compose up -d
 ```
-c. Launch the frontend
+7. Verify that the containers are running by...
+```bash
+    docker ps
 ```
-npm run dev
-```
+8. Now check your the browser if the backend and frontend are running.
+- Frontend: `http://<VM_IP_Address>:3000`
+- Backend: `http://<VM_IP_Address>:5000/api/health`
