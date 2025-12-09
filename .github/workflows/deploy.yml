@@ -5,6 +5,10 @@ on:
     workflows: ["CI"]
     types:
       - completed
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: Manual Deploy
   # workflow_dispatch:
     # inputs:
      # environment:
