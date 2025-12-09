@@ -70,9 +70,11 @@ jobs:
             docker rm centroid-finder-backend centroid-finder-frontend || true
 
             # Pull latest images
+            echo "Pulling backend image: ghcr.io/$DOCKER_REPO/centroid-finder-backend:master-4638fd0"
+            echo "Pulling backend image: ghcr.io/$DOCKER_REPO/centroid-finder-frontend:master-4638fd0"
             docker pull ghcr.io/$DOCKER_REPO/centroid-finder-backend:latest
             docker pull ghcr.io/$DOCKER_REPO/centroid-finder-frontend:latest
-
+            
             # Create network if it doesn't exist
             docker network create app-network || true
 
