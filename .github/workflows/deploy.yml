@@ -115,17 +115,3 @@ jobs:
 
           # Check frontend
           curl -f http://${{ secrets.SSH_HOST }}:3005 || echo "Frontend check failed"
-
-      - name: Local deployment (for testing)
-        run: |
-          echo "No SSH_HOST configured. This appears to be a local deployment test."
-          echo "To deploy to a remote server, configure these secrets/variables:"
-          echo "  - SSH_PRIVATE_KEY (secret)"
-          echo "  - SSH_HOST (variable)"
-          echo "  - SSH_USER (variable)"
-          echo "  - DEPLOY_PATH (variable, optional)"
-          echo ""
-          echo "Running local docker-compose for testing..."
-          docker-compose up -d --build
-          sleep 10
-          docker-compose ps
