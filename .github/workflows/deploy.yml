@@ -64,7 +64,8 @@ jobs:
         env:
           DOCKER_REPO: rmarx1456/salamanderproject
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << EOF
+            DOCKER_REPO="rmarx1456/salamanderproject"
             # Stop and remove existing containers
             docker stop centroid-finder-backend centroid-finder-frontend || true
             docker rm centroid-finder-backend centroid-finder-frontend || true
