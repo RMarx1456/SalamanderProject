@@ -84,8 +84,8 @@ jobs:
               --name centroid-finder-backend \
               --network app-network \
               -p 3000:3000 \
-              -v ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}/videos:/videos \
-              -v ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}/results:/results \
+              -v ${{ secrets.DEPLOY_PATH }}/videos:/videos \
+              -v ${{ secrets.DEPLOY_PATH }}/results:/results \
               -e VIDEO_DIR=/videos \
               -e RESULTS_DIR=/results \
               -e JAVA_JAR_PATH=/app/processor/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar \
