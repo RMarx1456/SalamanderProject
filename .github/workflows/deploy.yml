@@ -61,6 +61,8 @@ jobs:
           EOF
 
       - name: Deploy via Docker (manual)
+        env:
+          DOCKER_REPO: rmarx1456/salamanderproject
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # Stop and remove existing containers
@@ -68,8 +70,8 @@ jobs:
             docker rm centroid-finder-backend centroid-finder-frontend || true
 
             # Pull latest images
-            docker pull ghcr.io/${{ github.repository }}/centroid-finder-backend:latest
-            docker pull ghcr.io/${{ github.repository }}/centroid-finder-frontend:latest
+            docker pull ghcr.io/$DOCKER_REPO/centroid-finder-backend:latest
+            docker pull ghcr.io/$DOCKER_REPO/centroid-finder-frontend:latest
 
             # Create network if it doesn't exist
             docker network create app-network || true
@@ -85,7 +87,7 @@ jobs:
               -e RESULTS_DIR=/results \
               -e JAVA_JAR_PATH=/app/processor/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar \
               --restart unless-stopped \
-              ghcr.io/${{ github.repository }}/centroid-finder-backend:latest
+              ghcr.io/$DOCKER_REPO/centroid-finder-backend:latest
 
             # Run frontend
             docker run -d \
