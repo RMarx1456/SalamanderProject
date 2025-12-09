@@ -1,25 +1,30 @@
 name: Deploy
 
 on:
-  workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Deployment environment'
-        required: true
-        type: choice
-        options:
-          - production
-          - staging
-          - development
-      docker_compose:
-        description: 'Deploy using docker-compose'
-        required: true
-        type: boolean
-        default: true
+  workflow_run:
+    workflows: ["CI"]
+    types:
+      - completed
+  # workflow_dispatch:
+    # inputs:
+     # environment:
+     #   description: 'Deployment environment'
+     #   required: true
+      #  type: choice
+      #  options:
+      #    - production
+      #    - staging
+      #    - development
+    #  docker_compose:
+     #   description: 'Deploy using docker-compose'
+     #   required: true
+    #    type: boolean
+    #    default: true
 
 jobs:
   deploy:
     name: Deploy to ${{ inputs.environment }}
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment: ${{ inputs.environment }}
 
@@ -33,7 +38,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via Docker Compose
-        if: inputs.docker_compose && vars.SSH_HOST != ''
+        if: secrets.SSH_HOST != ''
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}
@@ -53,9 +58,9 @@ jobs:
           EOF
 
       - name: Deploy via Docker (manual)
-        if: "!inputs.docker_compose && vars.SSH_HOST != ''"
+        if: "!inputs.docker_compose && secrets.SSH_HOST != ''"
         run: |
-          ssh -o StrictHostKeyChecking=no ${{ vars.SSH_USER }}@${{ vars.SSH_HOST }} << 'EOF'
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # Stop and remove existing containers
             docker stop centroid-finder-backend centroid-finder-frontend || true
             docker rm centroid-finder-backend centroid-finder-frontend || true
@@ -72,8 +77,8 @@ jobs:
               --name centroid-finder-backend \
               --network app-network \
               -p 3000:3000 \
-              -v ${{ vars.DEPLOY_PATH || '~/salamander-project' }}/videos:/videos \
-              -v ${{ vars.DEPLOY_PATH || '~/salamander-project' }}/results:/results \
+              -v ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}/videos:/videos \
+              -v ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}/results:/results \
               -e VIDEO_DIR=/videos \
               -e RESULTS_DIR=/results \
               -e JAVA_JAR_PATH=/app/processor/centroid-finder-1.0-SNAPSHOT-jar-with-dependencies.jar \
@@ -94,19 +99,19 @@ jobs:
           EOF
 
       - name: Health check
-        if: vars.SSH_HOST != ''
+        if: secrets.SSH_HOST != ''
         run: |
           echo "Waiting for services to start..."
           sleep 10
 
           # Check backend health
-          curl -f http://${{ vars.SSH_HOST }}:3000/health || echo "Backend health check failed"
+          curl -f http://${{ secrets.SSH_HOST }}:3000/health || echo "Backend health check failed"
 
           # Check frontend
-          curl -f http://${{ vars.SSH_HOST }}:3005 || echo "Frontend check failed"
+          curl -f http://${{ secrets.SSH_HOST }}:3005 || echo "Frontend check failed"
 
       - name: Local deployment (for testing)
-        if: vars.SSH_HOST == ''
+        if: secrets.SSH_HOST == ''
         run: |
           echo "No SSH_HOST configured. This appears to be a local deployment test."
           echo "To deploy to a remote server, configure these secrets/variables:"
