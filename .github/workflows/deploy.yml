@@ -38,7 +38,7 @@ jobs:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy via Docker Compose
-        if: secrets.SSH_HOST != ''
+        if: ${{ secrets.SSH_HOST }} != ''
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             cd ${{ secrets.DEPLOY_PATH || '~/salamander-project' }}
@@ -58,7 +58,7 @@ jobs:
           EOF
 
       - name: Deploy via Docker (manual)
-        if: "!inputs.docker_compose && secrets.SSH_HOST != ''"
+        if: ${{ secrets.SSH_HOST }} != ''
         run: |
           ssh -o StrictHostKeyChecking=no ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             # Stop and remove existing containers
@@ -99,7 +99,7 @@ jobs:
           EOF
 
       - name: Health check
-        if: secrets.SSH_HOST != ''
+        if: ${{ secrets.SSH_HOST }} != ''
         run: |
           echo "Waiting for services to start..."
           sleep 10
@@ -111,7 +111,7 @@ jobs:
           curl -f http://${{ secrets.SSH_HOST }}:3005 || echo "Frontend check failed"
 
       - name: Local deployment (for testing)
-        if: secrets.SSH_HOST == ''
+        if: ${{ secrets.SSH_HOST }} == ''
         run: |
           echo "No SSH_HOST configured. This appears to be a local deployment test."
           echo "To deploy to a remote server, configure these secrets/variables:"
