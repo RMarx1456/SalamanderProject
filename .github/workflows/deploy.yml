@@ -94,7 +94,7 @@ jobs:
               --name centroid-finder-frontend \
               --network app-network \
               -p 3005:3005 \
-              -e NEXT_PUBLIC_API_BASE_URL=http://backend:3000 \
+              -e NEXT_PUBLIC_API_BASE_URL=http://${{ secrets.SSH_HOST }}:3000 \
               --restart unless-stopped \
               ghcr.io/$DOCKER_REPO/centroid-finder-frontend:latest
 
