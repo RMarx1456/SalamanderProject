@@ -23,10 +23,10 @@ on:
 
 jobs:
   deploy:
-    name: Deploy to ${{ inputs.environment }}
+    name: Deploy to production
     if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
-    environment: ${{ inputs.environment }}
+    environment: production
 
     steps:
       - name: Checkout code
