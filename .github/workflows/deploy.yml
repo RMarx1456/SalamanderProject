@@ -80,6 +80,8 @@ jobs:
             docker network create app-network || true
 
             # Run backend
+            echo "Video path: ${{ secrets.DEPLOY_PATH }}/videos:/videos"
+            echo "Result path: ${{ secrets.DEPLOY_PATH }}/results:/results"
             docker run -d \
               --name centroid-finder-backend \
               --network app-network \
